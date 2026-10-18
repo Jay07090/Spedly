@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Spendly — a personal expense tracker with iOS-style liquid glass design. Works offline and installs as an app.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Spendly">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Spendly</title>
+<script>
+(function(){try{var s=(JSON.parse(localStorage.getItem('spendly:v1')||'{}').settings)||{};var t=s.theme||'auto';if(t==='auto')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- SF Symbols–style icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.2 12 3l9 7.2V20a1.5 1.5 0 0 1-1.5 1.5H15v-6.5H9v6.5H4.5A1.5 1.5 0 0 1 3 20z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/></symbol>
+    <symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.2 15.9A10 10 0 1 1 8 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 8h6M9 11.5h6M10 8c3.5 0 3.5 7 0 7l4 3"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 21h16"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M8 11H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 22c4 0 7-2.7 7-7 0-4-3-6.5-4.5-10-1 2.5-2.5 3.5-4 4C9 7 9 5 9.5 3 6.5 5 5 9 5 13c0 5 3 9 7 9z"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  </defs>
+</svg>
+
+<div class="bg" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>
+
+<div id="island" class="island" role="status" aria-live="polite"><span class="island-text"></span></div>
+
+<div id="app">
+  <header class="navbar glass" id="navbar"><span id="navTitle">Summary</span></header>
+
+  <!-- HOME -->
+  <section class="view active" id="view-home" data-title="Summary">
+    <div class="view-inner">
+      <p class="eyebrow" id="greeting">Hello</p>
+      <h1 class="large-title">Summary</h1>
+
+      <div class="install-tip glass card" id="installTip" hidden>
+        <span class="ico" style="background:var(--blue)"><svg><use href="#i-share"/></svg></span>
+        <div class="grow"><b>Install Spendly</b><small>Tap <b>Share</b>, then <b>Add to Home Screen</b></small></div>
+        <button class="icon-btn" id="tipClose" aria-label="Dismiss"><svg><use href="#i-x"/></svg></button>
+      </div>
+
+      <div class="hero glass card">
+        <div class="hero-top">
+          <span class="label">Spent in <b id="heroMonth">—</b></span>
+          <span class="chip" id="heroChip">On track</span>
+        </div>
+        <div class="hero-amount" id="heroSpent">₹0</div>
+        <div class="budget">
+          <div class="budget-track"><div class="budget-fill" id="budgetFill"></div></div>
+          <div class="budget-meta"><span id="budgetLeft">—</span><span id="budgetOf"></span></div>
+        </div>
+        <div class="hero-stats">
+          <div><span class="label">Income</span><b class="pos" id="heroIncome">₹0</b></div>
+          <div><span class="label">Net</span><b id="heroNet">₹0</b></div>
+          <div><span class="label">Today</span><b id="heroToday">₹0</b></div>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <div class="tile glass card">
+          <span class="ico" style="background:var(--orange)"><svg><use href="#i-flame"/></svg></span>
+          <span class="label">Daily average</span><b id="tileAvg">₹0</b>
+        </div>
+        <div class="tile glass card">
+          <span class="ico" style="background:var(--purple)"><svg><use href="#i-crown"/></svg></span>
+          <span class="label">Top category</span><b id="tileTop">—</b>
+        </div>
+      </div>
+
+      <div class="section-head"><h2>Recent</h2><button class="link" data-goto="activity">See All</button></div>
+      <div class="list glass card" id="recentList"></div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY -->
+  <section class="view" id="view-activity" data-title="Activity">
+    <div class="view-inner">
+      <h1 class="large-title">Activity</h1>
+      <label class="search glass">
+        <svg><use href="#i-search"/></svg>
+        <input id="search" type="search" placeholder="Search" autocomplete="off" enterkeyhint="search">
+      </label>
+      <div class="segmented" id="filterSeg">
+        <span class="seg-thumb"></span>
+        <button data-v="all">All</button><button data-v="expense">Expenses</button><button data-v="income">Income</button>
+      </div>
+      <div id="activityList"></div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section class="view" id="view-insights" data-title="Insights">
+    <div class="view-inner">
+      <h1 class="large-title">Insights</h1>
+      <div class="month-switch glass">
+        <button class="icon-btn" id="prevMonth" aria-label="Previous month"><svg><use href="#i-left"/></svg></button>
+        <b id="insMonth">—</b>
+        <button class="icon-btn" id="nextMonth" aria-label="Next month"><svg><use href="#i-right"/></svg></button>
+      </div>
+      <div class="glass card donut-card">
+        <div class="donut-wrap">
+          <svg viewBox="0 0 180 180" class="donut" id="donut"></svg>
+          <div class="donut-center"><span class="label">Spent</span><b id="donutTotal">₹0</b><small id="donutCount"></small></div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="section-head"><h2>Daily Spending</h2><span class="label" id="barsMeta"></span></div>
+      <div class="glass card bars-card">
+        <div class="bars" id="bars"></div>
+        <div class="bars-axis" id="barsAxis"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="view-settings" data-title="Settings">
+    <div class="view-inner">
+      <h1 class="large-title">Settings</h1>
+
+      <div class="group-title">Profile</div>
+      <div class="form glass">
+        <label class="row"><span class="ico" style="background:var(--indigo)"><svg><use href="#i-user"/></svg></span><span class="grow">Name</span><input id="setName" placeholder="Your name" maxlength="24" autocomplete="given-name"></label>
+      </div>
+
+      <div class="group-title">Budget</div>
+      <div class="form glass">
+        <label class="row"><span class="ico" style="background:var(--green)"><svg><use href="#i-target"/></svg></span><span class="grow">Monthly budget</span><input id="setBudget" inputmode="numeric" placeholder="0"></label>
+        <label class="row"><span class="ico" style="background:var(--orange)"><svg><use href="#i-coin"/></svg></span><span class="grow">Currency</span>
+          <select id="setCurrency"><option value="₹">₹ INR</option><option value="$">$ USD</option><option value="€">€ EUR</option><option value="£">£ GBP</option></select></label>
+      </div>
+
+      <div class="group-title">Appearance</div>
+      <div class="segmented" id="themeSeg">
+        <span class="seg-thumb"></span>
+        <button data-v="auto">Automatic</button><button data-v="light">Light</button><button data-v="dark">Dark</button>
+      </div>
+
+      <div class="group-title">Data</div>
+      <div class="form glass">
+        <button class="row" id="btnInstall" hidden><span class="ico" style="background:var(--blue)"><svg><use href="#i-phone"/></svg></span><span class="grow">Install App</span><svg class="chev"><use href="#i-right"/></svg></button>
+        <button class="row" id="btnCSV"><span class="ico" style="background:var(--blue)"><svg><use href="#i-down"/></svg></span><span class="grow">Export CSV</span><svg class="chev"><use href="#i-right"/></svg></button>
+        <button class="row" id="btnBackup"><span class="ico" style="background:var(--teal)"><svg><use href="#i-box"/></svg></span><span class="grow">Back Up Data</span><svg class="chev"><use href="#i-right"/></svg></button>
+        <label class="row" for="restoreInput"><span class="ico" style="background:var(--pink)"><svg><use href="#i-up"/></svg></span><span class="grow">Restore Backup</span><svg class="chev"><use href="#i-right"/></svg></label>
+        <button class="row" id="btnSample"><span class="ico" style="background:var(--yellow)"><svg><use href="#i-spark"/></svg></span><span class="grow">Load Sample Data</span><svg class="chev"><use href="#i-right"/></svg></button>
+      </div>
+      <input type="file" id="restoreInput" accept="application/json,.json" hidden>
+
+      <div class="form glass">
+        <button class="row danger" id="btnErase"><span class="ico" style="background:var(--red)"><svg><use href="#i-trash"/></svg></span><span class="grow">Erase All Data</span></button>
+      </div>
+
+      <p class="footnote">Your data is stored only on this device and works offline. Use <b>Back Up Data</b> now and then to keep a copy.<br><br>Spendly · v1.0</p>
+    </div>
+  </section>
+
+  <nav class="tabbar-wrap">
+    <div class="tabbar glass" id="tabbar">
+      <span class="tab-lens"></span>
+      <button class="tab on" data-tab="home"><svg><use href="#i-home"/></svg><span>Summary</span></button>
+      <button class="tab" data-tab="activity"><svg><use href="#i-list"/></svg><span>Activity</span></button>
+      <button class="tab" data-tab="insights"><svg><use href="#i-pie"/></svg><span>Insights</span></button>
+      <button class="tab" data-tab="settings"><svg><use href="#i-gear"/></svg><span>Settings</span></button>
+    </div>
+    <button class="fab glass" id="fab" aria-label="Add transaction"><svg><use href="#i-plus"/></svg></button>
+  </nav>
+</div>
+
+<!-- ADD / EDIT SHEET -->
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet glass" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-handle" id="sheetHandle">
+    <div class="grabber"></div>
+    <div class="sheet-head">
+      <button class="link" id="sheetCancel">Cancel</button>
+      <b id="sheetTitle">New Expense</b>
+      <button class="link strong" id="sheetSave">Add</button>
+    </div>
+  </div>
+  <div class="sheet-body">
+    <div class="segmented" id="typeSeg">
+      <span class="seg-thumb"></span>
+      <button data-v="expense">Expense</button><button data-v="income">Income</button>
+    </div>
+    <div class="amount-field" id="amountField">
+      <span class="cur" id="amtCur">₹</span>
+      <input id="amount" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="done" aria-label="Amount">
+      <span class="mirror" id="amtMirror" aria-hidden="true"></span>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+    <div class="form inset">
+      <label class="row"><span class="grow">Note</span><input id="note" placeholder="Optional" maxlength="60" autocomplete="off"></label>
+      <label class="row"><span class="grow">Date</span><input id="date" type="date"></label>
+    </div>
+    <button class="danger-btn" id="sheetDelete" hidden>Delete Transaction</button>
+  </div>
+</div>
+
+<!-- iOS ALERT -->
+<div class="alert-wrap" id="alertWrap">
+  <div class="alert">
+    <div class="alert-body"><h3 id="alertTitle"></h3><p id="alertMsg"></p></div>
+    <div class="alert-btns"><button id="alertCancel">Cancel</button><button id="alertOk" class="destructive">Delete</button></div>
+  </div>
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
