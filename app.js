@@ -172,6 +172,15 @@ function renderHome() {
   const chip = $('#heroChip');
   chip.dataset.s = level;
   chip.textContent = { none: 'No budget', over: 'Over budget', warn: 'Spending fast', ok: 'On track' }[level];
+
+  const heroCard = $('#heroCard');
+  if (heroCard) {
+    heroCard.classList.remove('glass-tint-green', 'glass-tint-orange', 'glass-tint-red');
+    if (level === 'ok') heroCard.classList.add('glass-tint-green');
+    else if (level === 'warn') heroCard.classList.add('glass-tint-orange');
+    else if (level === 'over') heroCard.classList.add('glass-tint-red');
+  }
+
   $('#budgetLeft').textContent = !budget ? 'Set a monthly budget in Settings'
     : spent <= budget ? `${money(budget - spent)} left` : `${money(spent - budget)} over`;
   $('#budgetOf').textContent = budget ? `of ${money(budget)}` : '';
@@ -300,8 +309,12 @@ function setupSeg(el, onChange) {
   const set = (v, fire = true) => {
     const i = Math.max(0, btns.findIndex(b => b.dataset.v === v));
     el.style.setProperty('--i', i);
+    el.classList.remove('morphing');
+    void el.offsetWidth;
+    el.classList.add('morphing');
     btns.forEach((b, j) => b.classList.toggle('on', j === i));
     el.dataset.value = btns[i].dataset.v;
+    if (fire && navigator.vibrate) navigator.vibrate(6);
     if (fire && onChange) onChange(btns[i].dataset.v);
   };
   btns.forEach(b => b.addEventListener('click', () => set(b.dataset.v)));
@@ -319,15 +332,20 @@ const typeSeg = setupSeg($('#typeSeg'), v => {
 /* ---------- Navigation ---------- */
 function go(tab) {
   if (tab === current) { $(`#view-${tab}`).scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const fromIndex = TABS.indexOf(current);
+  const toIndex = TABS.indexOf(tab);
   $(`#view-${current}`).classList.remove('active');
   const to = $(`#view-${tab}`);
   to.classList.add('active');
   to.scrollTop = 0;
   current = tab;
   const bar = $('#tabbar');
-  bar.style.setProperty('--i', TABS.indexOf(tab));
-  bar.classList.remove('moving'); void bar.offsetWidth; bar.classList.add('moving');
+  bar.style.setProperty('--i', toIndex);
+  bar.classList.remove('morph-right', 'morph-left');
+  void bar.offsetWidth;
+  bar.classList.add(toIndex > fromIndex ? 'morph-right' : 'morph-left');
   $$('.tab', bar).forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
+  if (navigator.vibrate) navigator.vibrate(6);
   if (tab === 'insights') renderInsights();
   if (tab === 'activity') renderActivity();
   updateNav();
@@ -680,14 +698,103 @@ $('#island').addEventListener('click', e => {
   if (e.target.closest('.island-act') && el._fn) { const fn = el._fn; hideIsland(); fn(); }
 });
 
-/* ---------- Liquid glass: specular highlight follows the pointer ---------- */
-document.addEventListener('pointermove', e => {
-  const g = e.target.closest?.('.glass');
-  if (!g) return;
-  const r = g.getBoundingClientRect();
-  g.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
-  g.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
-}, { passive: true });
+/* ---------- Apple Liquid Glass: Optical Caustics & 3D Tilt Engine ---------- */
+(function setupLiquidGlass() {
+  let activeGlass = null;
+  let targetX = 50, targetY = 0;
+  let currentX = 50, currentY = 0;
+  let targetTiltX = 0, targetTiltY = 0;
+  let currentTiltX = 0, currentTiltY = 0;
+  let rafId = null;
+
+  function update() {
+    if (activeGlass) {
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+      currentTiltX += (targetTiltX - currentTiltX) * 0.18;
+      currentTiltY += (targetTiltY - currentTiltY) * 0.18;
+
+      activeGlass.style.setProperty('--mx', `${currentX.toFixed(1)}%`);
+      activeGlass.style.setProperty('--my', `${currentY.toFixed(1)}%`);
+      activeGlass.style.setProperty('--rx', `${currentTiltX.toFixed(2)}deg`);
+      activeGlass.style.setProperty('--ry', `${currentTiltY.toFixed(2)}deg`);
+
+      if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetTiltX - currentTiltX) > 0.05) {
+        rafId = requestAnimationFrame(update);
+      } else {
+        rafId = null;
+      }
+    } else {
+      rafId = null;
+    }
+  }
+
+  function onPointerMove(e) {
+    const g = e.target.closest?.('.glass');
+    if (!g) {
+      if (activeGlass) resetGlass(activeGlass);
+      activeGlass = null;
+      return;
+    }
+    if (activeGlass !== g) {
+      if (activeGlass) resetGlass(activeGlass);
+      activeGlass = g;
+      const r = g.getBoundingClientRect();
+      currentX = targetX = ((e.clientX - r.left) / r.width) * 100;
+      currentY = targetY = ((e.clientY - r.top) / r.height) * 100;
+    }
+    const r = activeGlass.getBoundingClientRect();
+    targetX = ((e.clientX - r.left) / r.width) * 100;
+    targetY = ((e.clientY - r.top) / r.height) * 100;
+
+    // 3D perspective micro-tilt (subtle and optical, max ±4 degrees)
+    const centerX = r.left + r.width / 2;
+    const centerY = r.top + r.height / 2;
+    const normX = (e.clientX - centerX) / (r.width / 2);
+    const normY = (e.clientY - centerY) / (r.height / 2);
+    targetTiltX = Math.max(-4, Math.min(4, -normY * 3.5));
+    targetTiltY = Math.max(-4, Math.min(4, normX * 3.5));
+
+    if (!rafId) rafId = requestAnimationFrame(update);
+  }
+
+  function resetGlass(g) {
+    g.style.setProperty('--rx', '0deg');
+    g.style.setProperty('--ry', '0deg');
+    g.style.removeProperty('--scale');
+    g.style.removeProperty('--glass-light-o');
+  }
+
+  document.addEventListener('pointermove', onPointerMove, { passive: true });
+  document.addEventListener('pointerdown', e => {
+    const g = e.target.closest?.('.glass');
+    if (g) {
+      g.style.setProperty('--glass-light-o', '0.98');
+      g.style.setProperty('--scale', '0.98');
+      if (navigator.vibrate) navigator.vibrate(6);
+    }
+  }, { passive: true });
+  document.addEventListener('pointerup', e => {
+    const g = e.target.closest?.('.glass');
+    if (g) {
+      g.style.removeProperty('--scale');
+      g.style.removeProperty('--glass-light-o');
+    }
+  }, { passive: true });
+
+  // Gyroscope / device orientation on mobile
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', e => {
+      if (e.gamma == null || e.beta == null) return;
+      const tiltX = Math.max(-30, Math.min(30, e.gamma));
+      const tiltY = Math.max(-30, Math.min(30, e.beta - 45));
+      const mx = 50 + (tiltX / 30) * 35;
+      const my = 20 + (tiltY / 30) * 35;
+      document.documentElement.style.setProperty('--mx', `${mx.toFixed(1)}%`);
+      document.documentElement.style.setProperty('--my', `${my.toFixed(1)}%`);
+    }, { passive: true });
+  }
+})();
 
 /* ---------- Keyboard shortcuts (website) ---------- */
 document.addEventListener('keydown', e => {

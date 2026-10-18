@@ -48,7 +48,7 @@
   </defs>
 </svg>
 
-<div class="bg" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>
+<div class="bg" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i><i class="blob b5"></i></div>
 
 <div id="island" class="island" role="status" aria-live="polite"><span class="island-text"></span></div>
 
@@ -61,13 +61,13 @@
       <p class="eyebrow" id="greeting">Hello</p>
       <h1 class="large-title">Summary</h1>
 
-      <div class="install-tip glass card" id="installTip" hidden>
+      <div class="install-tip glass card glass-tint-blue" id="installTip" hidden>
         <span class="ico" style="background:var(--blue)"><svg><use href="#i-share"/></svg></span>
         <div class="grow"><b>Install Spendly</b><small>Tap <b>Share</b>, then <b>Add to Home Screen</b></small></div>
         <button class="icon-btn" id="tipClose" aria-label="Dismiss"><svg><use href="#i-x"/></svg></button>
       </div>
 
-      <div class="hero glass card">
+      <div class="hero glass card" id="heroCard">
         <div class="hero-top">
           <span class="label">Spent in <b id="heroMonth">—</b></span>
           <span class="chip" id="heroChip">On track</span>
@@ -85,11 +85,11 @@
       </div>
 
       <div class="tiles">
-        <div class="tile glass card">
+        <div class="tile glass card glass-tint-orange">
           <span class="ico" style="background:var(--orange)"><svg><use href="#i-flame"/></svg></span>
           <span class="label">Daily average</span><b id="tileAvg">₹0</b>
         </div>
-        <div class="tile glass card">
+        <div class="tile glass card glass-tint-purple">
           <span class="ico" style="background:var(--purple)"><svg><use href="#i-crown"/></svg></span>
           <span class="label">Top category</span><b id="tileTop">—</b>
         </div>
@@ -181,7 +181,7 @@
     </div>
   </section>
 
-  <nav class="tabbar-wrap">
+  <nav class="tabbar-wrap glass-container">
     <div class="tabbar glass" id="tabbar">
       <span class="tab-lens"></span>
       <button class="tab on" data-tab="home"><svg><use href="#i-home"/></svg><span>Summary</span></button>
@@ -189,7 +189,7 @@
       <button class="tab" data-tab="insights"><svg><use href="#i-pie"/></svg><span>Insights</span></button>
       <button class="tab" data-tab="settings"><svg><use href="#i-gear"/></svg><span>Settings</span></button>
     </div>
-    <button class="fab glass" id="fab" aria-label="Add transaction"><svg><use href="#i-plus"/></svg></button>
+    <button class="fab glass glass-tint-blue" id="fab" aria-label="Add transaction"><svg><use href="#i-plus"/></svg></button>
   </nav>
 </div>
 
@@ -225,7 +225,7 @@
 
 <!-- iOS ALERT -->
 <div class="alert-wrap" id="alertWrap">
-  <div class="alert">
+  <div class="alert glass">
     <div class="alert-body"><h3 id="alertTitle"></h3><p id="alertMsg"></p></div>
     <div class="alert-btns"><button id="alertCancel">Cancel</button><button id="alertOk" class="destructive">Delete</button></div>
   </div>

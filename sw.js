@@ -1,6 +1,6 @@
 /* Spendly service worker — offline support.
    Bump CACHE whenever you deploy a new version. */
-const CACHE = 'spendly-v1';
+const CACHE = 'spendly-v2';
 const ASSETS = [
   './',
   './index.html',
